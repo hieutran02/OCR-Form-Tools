@@ -189,11 +189,6 @@ export class LayoutPredictPage extends React.Component<Partial<ILayoutPredictPag
                     key: 'Table',
                     text: 'Table',
                     onClick: () => this.onCSVDownloadClick()
-                },
-                {
-                    key: 'XML',
-                    text: 'XML',
-                    onClick: () => this.onXMLDownloadClick()
                 }
             ]
         }
@@ -352,36 +347,6 @@ export class LayoutPredictPage extends React.Component<Partial<ILayoutPredictPag
             if (data.length > 0) {
                 downloadZipFile(data, this.state.fileLabel + "tables");
             }
-        }
-    }
-
-    OBJtoXML = (obj) => {
-        var xml = '';
-        for (var prop in obj) {
-          console.log(prop + '\n');
-          xml += obj[prop] instanceof Array ? '' : "<" + prop + ">";
-          if (obj[prop] instanceof Array) {
-            for (var array in obj[prop]) {
-              xml += "<" + prop + ">";
-              xml += this.OBJtoXML(new Object(obj[prop][array]));
-              xml += "</" + prop + ">";
-            }
-          } else if (typeof obj[prop] == "object") {
-            xml += this.OBJtoXML(new Object(obj[prop]));
-          } else {
-            xml += obj[prop];
-          }
-          xml += obj[prop] instanceof Array ? '' : "</" + prop + ">";
-        }
-        var xml = xml.replace(/<\/?[0-9]{1,}>/g, '');
-        return xml
-      }
-
-    onXMLDownloadClick = () =>{
-        const {layoutData} = this.state;
-        if (layoutData){
-            console.log("fw" + '\n');
-            downloadFile((this.OBJtoXML(layoutData)), this.state.fileLabel + ".xml");
         }
     }
 
