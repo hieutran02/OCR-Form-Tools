@@ -389,11 +389,6 @@ export class LayoutPredictPage extends React.Component<Partial<ILayoutPredictPag
         }
     }
 
-    //Download xls
-    file = new File([], 'xls_file.xls',{
-        type: 'text/plain'
-    })
-
     csvRows = []
     row = []
     csvmaker = function (data, col_num) {
