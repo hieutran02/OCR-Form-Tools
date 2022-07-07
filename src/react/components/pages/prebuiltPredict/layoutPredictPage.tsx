@@ -194,6 +194,11 @@ export class LayoutPredictPage extends React.Component<Partial<ILayoutPredictPag
                     key: 'XML',
                     text: 'XML',
                     onClick: () => this.onXMLDownloadClick()
+                },
+                {
+                    key: 'excel',
+                    text: 'excel',
+                    onClick: () => this.onExcelDownloadClick()
                 }
             ]
         }
@@ -380,11 +385,51 @@ export class LayoutPredictPage extends React.Component<Partial<ILayoutPredictPag
     onXMLDownloadClick = () =>{
         const {layoutData} = this.state;
         if (layoutData){
-            console.log("fw" + '\n');
-            downloadFile((this.OBJtoXML(layoutData)), this.state.fileLabel + ".xml");
+            downloadFile((this.OBJtoXML(JSON.stringify(layoutData))), this.state.fileLabel + ".xml");
         }
     }
 
+    //Download xls
+    file = new File([], 'xls_file.xls',{
+        type: 'text/plain'
+    })
+
+    csvRows = []
+    row = []
+    csvmaker = function (data, col_num) {
+        this.csvRows.push(this.row)
+        this.row = []
+        // Empty array for storing the values
+        data.forEach(cell => {
+            if (cell["columnIndex"] < col_num - 1){
+                this.row.push(cell["text"])
+            }
+            else{
+                this.row.push(cell["text"])
+                this.csvRows.push(this.row)
+                this.row = []
+            }
+        });
+    }
+
+    onExcelDownloadClick = () =>{
+        const {layoutData} = this.state;
+        if (layoutData){
+            for (let i = 0; i < layoutData["analyzeResult"]["pageResults"].length; i++){
+                let table = layoutData["analyzeResult"]["pageResults"][i]["tables"][0];
+                if (table == null){
+                    continue;
+                }
+                else{
+                    let col_num = table["columns"]
+                    this.csvmaker(table["cells"], col_num)
+                }
+            }
+            downloadFile(this.csvRows.join('\n'), this.state.fileLabel + ".csv");
+        }
+    }
+
+    
     onFileChange(data: {
         file: File,
         fileLabel: string,
