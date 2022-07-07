@@ -322,7 +322,7 @@ export default class PredictResult extends React.Component<IPredictResultProps, 
     triggerXMLDownload = () =>{
         const {analyzeResult} = this.props;
         if (analyzeResult){
-            downloadFile((this.OBJtoXML(JSON.stringify(analyzeResult))), this.props.downloadResultLabel + ".xml");
+            downloadFile((this.OBJtoXML(analyzeResult)), this.props.downloadResultLabel + ".xml");
         }
     }
 
