@@ -319,7 +319,7 @@ export default class PredictResult extends React.Component<IPredictResultProps, 
         return xml
       }
 
-    onXMLDownloadClick = () =>{
+    triggerXMLDownload = () =>{
         const {analyzeResult} = this.props;
         if (analyzeResult){
             downloadFile((this.OBJtoXML(JSON.stringify(analyzeResult))), this.props.downloadResultLabel + ".xml");
@@ -344,7 +344,7 @@ export default class PredictResult extends React.Component<IPredictResultProps, 
         });
     }
 
-    onExcelDownloadClick = () =>{
+    triggerExcelDownload = () =>{
         const {analyzeResult} = this.props;
         if (analyzeResult){
             for (let i = 0; i < analyzeResult["analyzeResult"]["pageResults"].length; i++){
