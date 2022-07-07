@@ -77,7 +77,17 @@ export default class PredictResult extends React.Component<IPredictResultProps, 
                     key: 'CSV',
                     text: 'CSV',
                     onClick: () => this.triggerCSVDownload()
-                }
+                },
+                {
+                    key: 'XML',
+                    text: 'XML',
+                    onClick: () => this.triggerXMLDownload()
+                },
+                {
+                    key: 'Excel',
+                    text: 'Excel',
+                    onClick: () => this.triggerExcelDownload()
+                },
             ]
         }
         return (
@@ -285,6 +295,70 @@ export default class PredictResult extends React.Component<IPredictResultProps, 
             data: tableContent
         });
         downloadZipFile(data, this.props.downloadResultLabel);
+    }
+
+    OBJtoXML = (obj) => {
+        var xml = '';
+        for (var prop in obj) {
+          console.log(prop + '\n');
+          xml += obj[prop] instanceof Array ? '' : "<" + prop + ">";
+          if (obj[prop] instanceof Array) {
+            for (var array in obj[prop]) {
+              xml += "<" + prop + ">";
+              xml += this.OBJtoXML(new Object(obj[prop][array]));
+              xml += "</" + prop + ">";
+            }
+          } else if (typeof obj[prop] == "object") {
+            xml += this.OBJtoXML(new Object(obj[prop]));
+          } else {
+            xml += obj[prop];
+          }
+          xml += obj[prop] instanceof Array ? '' : "</" + prop + ">";
+        }
+        var xml = xml.replace(/<\/?[0-9]{1,}>/g, '');
+        return xml
+      }
+
+    onXMLDownloadClick = () =>{
+        const {analyzeResult} = this.props;
+        if (analyzeResult){
+            downloadFile((this.OBJtoXML(JSON.stringify(analyzeResult))), this.props.downloadResultLabel + ".xml");
+        }
+    }
+
+    csvRows = []
+    row = []
+    csvmaker = function (data, col_num) {
+        this.csvRows.push(this.row)
+        this.row = []
+        // Empty array for storing the values
+        data.forEach(cell => {
+            if (cell["columnIndex"] < col_num - 1){
+                this.row.push(cell["text"])
+            }
+            else{
+                this.row.push(cell["text"])
+                this.csvRows.push(this.row)
+                this.row = []
+            }
+        });
+    }
+
+    onExcelDownloadClick = () =>{
+        const {analyzeResult} = this.props;
+        if (analyzeResult){
+            for (let i = 0; i < analyzeResult["analyzeResult"]["pageResults"].length; i++){
+                let table = analyzeResult["analyzeResult"]["pageResults"][i]["tables"][0];
+                if (table == null){
+                    continue;
+                }
+                else{
+                    let col_num = table["columns"]
+                    this.csvmaker(table["cells"], col_num)
+                }
+            }
+            downloadFile(this.csvRows.join('\n'), this.props.downloadResultLabel + ".csv");
+        }
     }
 
     private getItems() {
