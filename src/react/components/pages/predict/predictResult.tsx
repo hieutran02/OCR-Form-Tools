@@ -299,7 +299,7 @@ export default class PredictResult extends React.Component<IPredictResultProps, 
 
     OBJtoXML = (obj) => {
         var xml = '';
-        for (var prop in obj) {
+        for (var prop in obj) { 
           console.log(prop + '\n');
           xml += obj[prop] instanceof Array ? '' : "<" + prop + ">";
           if (obj[prop] instanceof Array) {
@@ -315,6 +315,7 @@ export default class PredictResult extends React.Component<IPredictResultProps, 
           }
           xml += obj[prop] instanceof Array ? '' : "</" + prop + ">";
         }
+        //delete the index in the output file while exporting
         var xml = xml.replace(/<\/?[0-9]{1,}>/g, '');
         return xml
       }
