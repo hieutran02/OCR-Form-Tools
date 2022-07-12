@@ -362,27 +362,28 @@ export class LayoutPredictPage extends React.Component<Partial<ILayoutPredictPag
 
     OBJtoXML = (obj) => {
         var xml = '';
-        for (var prop in obj) {
-          console.log(prop + '\n');
-          xml += obj[prop] instanceof Array ? '' : "<" + prop + ">";
-          if (obj[prop] instanceof Array) {
-            for (var array in obj[prop]) {
-              xml += "<" + prop + ">";
-              xml += this.OBJtoXML(new Object(obj[prop][array]));
-              xml += "</" + prop + ">";
+        for (var prop in obj) { 
+            console.log(prop + '\n');
+            xml += obj[prop] instanceof Array ? '' : "<" + prop + ">";
+            if (obj[prop] instanceof Array) {
+                for (var array in obj[prop]) {
+                xml += "<" + prop + ">";
+                xml += this.OBJtoXML(new Object(obj[prop][array]));
+                xml += "</" + prop + ">";
+                }
+            } else if (typeof obj[prop] == "object") {
+                xml += this.OBJtoXML(new Object(obj[prop]));
+            } else {
+                xml += obj[prop];
             }
-          } else if (typeof obj[prop] == "object") {
-            xml += this.OBJtoXML(new Object(obj[prop]));
-          } else {
-            xml += obj[prop];
-          }
-          xml += obj[prop] instanceof Array ? '' : "</" + prop + ">";
+            xml += obj[prop] instanceof Array ? '' : "</" + prop + ">";
         }
         //delete the index in the output file while exporting
         var xml = xml.replace(/<\/?[0-9]{1,}>/g, '');
         return xml
     }
 
+    //The generated XML file should be 1-line and does not conform any XML schema
     onXMLDownloadClick = () =>{
         const {layoutData} = this.state;
         if (layoutData){

@@ -320,6 +320,7 @@ export default class PredictResult extends React.Component<IPredictResultProps, 
         return xml
     }
 
+    //The generated XML file should be 1-line and does not conform any XML schema
     triggerXMLDownload = () =>{
         const {analyzeResult} = this.props;
         if (analyzeResult){
